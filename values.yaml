@@ -92,3 +92,9 @@ resources: {}
 
 # Optional tolerations
 tolerations: {}
+
+pvc:
+  enabled: false
+  # storage: 10Gi
+  # storageClass: ebs-gp2
+  # accessModes: ReadWriteOnce
