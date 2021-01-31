@@ -46,6 +46,10 @@ spec:
             tcpSocket:
               port: {{ .Values.proxysql.admin.port }}
           volumeMounts:
+            {{ if .Values.pvc.enabled }}
+            - mountPath: {{ .Values.proxysql.dataDir }}
+              name: {{ template "fullname" . }}
+            {{ end }}
             - mountPath: /etc/proxysql.cnf
               name: proxysql
               subPath: proxysql.cnf
@@ -62,3 +66,15 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{ end }}
+  {{ if .Values.pvc.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ template "fullname" . }}
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "{{ .Values.pvc.storageClass }}"
+    spec:
+      accessModes: [ "{{ .Values.pvc.accessModes }}" ]
+      resources:
+        requests:
+          storage: {{ .Values.pvc.storage }}
+  {{ end }}
